@@ -6,7 +6,7 @@ const {Book, User} =require('../models');
 
 const resolvers = {
     Query: {
-        me: async (parent, args) => {
+        me: async (parent, args, context) => {
             if (context.user) {
                 const userData = await User.findOne({_id: context.user._id
                 }).select('-__v -password')
@@ -15,18 +15,7 @@ const resolvers = {
                 return userData;
             }
             throw new AuthenticationError('Not logged in')
-        },
-        users: async () => {
-            return User.find()
-            .select('-__v -password')
-            .populate('books');
-        },
-        
-        user: async (parent, { username }) => {
-            return User.findOne({ username })
-            .select('-__v -password')
-            .populate('books');
-        },
+        }
     },
 
     Mutation: {
@@ -54,11 +43,11 @@ const resolvers = {
             return { token, user }
         },
 
-        saveBook: async (parent, {user, body}, context) => {
+        saveBook: async (parent, args, context) => {
             if (context.user) {
               const updatedUser = await User.findOneAndUpdate(
-                { _id: user._id },
-                { $addToSet: { savedBooks: body } },
+                { _id: context.user._id },
+                { $addToSet: { savedBooks: args.input } },
                 { new: true, runValidators: true }
               );
               return updatedUser;
@@ -66,10 +55,10 @@ const resolvers = {
             throw new AuthenticationError('You need to be logged in!');
           },
 
-          deleteBook: async (parent, {user, params}, context) => {
+          deleteBook: async (parent, args, context) => {
               if(context.user) {
                 const updatedUser = await User.findOneAndUpdate(
-                    { _id: user._id },
+                    { _id: context.user._id },
                     { $pull: { savedBooks: { bookId: params.bookId } } },
                     { new: true }
                   );
