@@ -6,14 +6,17 @@ class AuthService {
   // get user data
   getProfile() {
     return decode(this.getToken());
+  
   }
 
   // check if user's logged in
   loggedIn() {
     // Checks if there is a saved token and it's still valid
     const token = this.getToken();
+
     return !!token && !this.isTokenExpired(token); // handwaiving here
   }
+
 
   // check if token is expired
   isTokenExpired(token) {
