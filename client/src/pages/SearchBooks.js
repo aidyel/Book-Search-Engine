@@ -3,7 +3,7 @@ import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'reac
 
 import { useMutation } from '@apollo/client';
 import { SAVE_BOOK,} from '../utils/mutations';
-import { ME_QUERY } from '../utils/queries';
+import { GET_ME } from '../utils/queries';
 
 
 import Auth from '../utils/auth';
@@ -75,10 +75,10 @@ const SearchBooks = () => {
       await saveBook({
         variables: {book: bookToSave},
         update: cache => {
-          const {me} = cache.readQuery({ query: ME_QUERY });
+          const {me} = cache.readQuery({ query: GET_ME });
           // console.log(me)
           // console.log(me.savedBooks)
-          cache.writeQuery({ query: ME_QUERY , data: {me: { ...me, savedBooks: [...me.savedBooks, bookToSave] } } })
+          cache.writeQuery({ query: GET_ME , data: {me: { ...me, savedBooks: [...me.savedBooks, bookToSave] } } })
         }
       });
       // if book successfully saves to user's account, save book id to state
