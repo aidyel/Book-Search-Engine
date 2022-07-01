@@ -32,7 +32,7 @@ input savedBook {
     title: String!
     bookId: String!
     image: String
-    lik: String
+    link: String
     authors: [String]
 }
 
